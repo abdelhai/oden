@@ -1,0 +1,22 @@
+# Spacefile Docs: https://go.deta.dev/docs/spacefile/v0
+v: 0
+micros:
+- name: blog
+  src: .
+  engine: custom
+  commands:
+    - apt-get update
+    - apt-get -y install zip
+    - curl -L --fail --location --progress-bar --output out.zip https://github.com/denoland/deno/releases/download/v1.26.0/deno-x86_64-unknown-linux-gnu.zip
+    - unzip -d ./ -o out.zip
+    - chmod +x ./deno
+    - ./deno bundle index.ts bundle.ts
+  include:
+    - deno
+    - bundle.ts
+  presets:
+    env:
+    - name: DENO_DIR
+      description: deno config dir
+      default: "/tmp/deno_dir"
+  run: ./deno run --allow-env --allow-read --allow-net bundle.ts
